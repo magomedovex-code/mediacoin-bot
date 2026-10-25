@@ -1,0 +1,44 @@
+# ===== Настройки MediaCoin-бота =====
+# Формат: ИМЯ=значение   (без кавычек и без пробелов вокруг =)
+# Строки с # — комментарии, бот их пропускает.
+# НИКОМУ НЕ ПОКАЗЫВАЙ этот файл после заполнения: тут пароли и токены.
+
+# --- Discord ---
+# Токен бота: discord.com/developers -> приложение -> Bot -> Reset Token
+DISCORD_TOKEN=ВСТАВЬ_ТОКЕН
+# ID твоего Discord-сервера (ПКМ по иконке сервера -> Копировать ID сервера)
+GUILD_ID=ВСТАВЬ_ID_СЕРВЕРА
+# ID закрытого канала для админов (ПКМ по каналу -> Копировать ID канала)
+ADMIN_CHANNEL_ID=0
+# Приветствие в личку новым участникам: 1 = вкл, 0 = выкл
+# (для 1 нужно включить SERVER MEMBERS INTENT на сайте Discord)
+WELCOME=1
+# Канал для приветствия, если у человека закрыта личка (0 = не писать)
+WELCOME_CHANNEL_ID=0
+
+# --- YouTube ---
+# Ключ YouTube Data API v3 (console.cloud.google.com)
+YOUTUBE_API_KEY=ВСТАВЬ_КЛЮЧ
+
+# --- Режим выдачи ---
+# rcon   = бот сам выдаёт монеты через RCON
+# manual = бот пишет в админ-канал "Нику положено X", админ выдаёт сам и ставит ✅
+MODE=rcon
+
+# --- RCON (нужно только для MODE=rcon) ---
+# Адрес сервера БЕЗ порта (например play.myserver.net или IP)
+RCON_HOST=ВСТАВЬ_АДРЕС_СЕРВЕРА
+RCON_PORT=25575
+RCON_PASSWORD=ВСТАВЬ_ПАРОЛЬ_RCON
+
+# --- Правила ---
+# Сколько просмотров = 1 монета
+VIEWS_PER_COIN=100
+# Как часто проверять просмотры (в минутах, минимум 5)
+CHECK_MINUTES=60
+# Начало кода для описания видео (получится например TOL-4821)
+CODE_PREFIX=TOL
+
+# --- Команда выдачи монеты ---
+# {nick} и {amount} бот заменит сам. minecraft: в начале обязателен (иначе мешает Essentials).
+GIVE_COMMAND=minecraft:give {nick} paper[item_model="minecraft:command_block",custom_name={text:"MediaCoin",color:"gold",italic:false}] {amount}

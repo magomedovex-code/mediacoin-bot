@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MediaCoin Bot — инструкция</title>
+<meta name="description" content="Пошаговая инструкция с нуля: Discord-бот, который выдаёт MediaCoin за просмотры видео на Minecraft-сервере.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea;--paper:#fffdf8;--ink:#1c1b19;--muted:#6a655c;--line:#e2dccf;
+  --gold:#c98a12;--gold-soft:#fbefd2;--green:#2f7d3b;--green-soft:#e2f2e2;
+  --red:#b23a2e;--red-soft:#fbe5e1;--blue:#3b5bdb;--blue-soft:#e6ebfd;--code:#f0ebe0;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121210;--paper:#1b1a17;--ink:#ece8df;--muted:#a19b90;--line:#2f2d28;
+  --gold:#f0b43c;--gold-soft:#3a2e14;--green:#6fcf7c;--green-soft:#1b2e1d;
+  --red:#ef7b6e;--red-soft:#3a1d19;--blue:#8ea4ff;--blue-soft:#1d2340;--code:#25231f;}}
+:root[data-theme="dark"]{
+  --bg:#121210;--paper:#1b1a17;--ink:#ece8df;--muted:#a19b90;--line:#2f2d28;
+  --gold:#f0b43c;--gold-soft:#3a2e14;--green:#6fcf7c;--green-soft:#1b2e1d;
+  --red:#ef7b6e;--red-soft:#3a1d19;--blue:#8ea4ff;--blue-soft:#1d2340;--code:#25231f;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.65 Inter,system-ui,sans-serif}
+a{color:var(--blue)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:240px 1fr;gap:40px}
+@media(max-width:860px){.wrap{grid-template-columns:1fr;gap:0}nav.toc{display:none}}
+header.hero{max-width:1120px;margin:0 auto;padding:56px 16px 36px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-soft);color:var(--gold);font-weight:700;font-size:13px;padding:5px 12px;border-radius:99px;letter-spacing:.04em;text-transform:uppercase}
+h1{font-family:Unbounded,Inter,sans-serif;font-weight:800;font-size:clamp(30px,5.5vw,54px);line-height:1.08;margin:18px 0 14px;letter-spacing:-.01em}
+h1 .coin{color:var(--gold)}
+.lead{font-size:19px;color:var(--muted);max-width:720px;margin:0}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:12px;font-weight:700;text-decoration:none;border:2px solid var(--ink);color:var(--ink);background:transparent}
+.btn.primary{background:var(--gold);border-color:var(--gold);color:#1c1b19}
+.btn:hover{transform:translateY(-1px)}
+nav.toc{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto;padding:8px 0 30px;font-size:14px}
+nav.toc b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px}
+nav.toc a{display:block;color:var(--ink);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line)}
+nav.toc a:hover{border-color:var(--gold);color:var(--gold)}
+main{min-width:0;padding-bottom:80px}
+section{scroll-margin-top:16px;margin:0 0 56px}
+h2{font-family:Unbounded,Inter,sans-serif;font-weight:600;font-size:clamp(21px,3vw,27px);margin:0 0 14px;display:flex;gap:14px;align-items:baseline}
+h2 .n{font-size:.75em;color:var(--gold);min-width:2ch}
+h3{font-size:18px;margin:26px 0 8px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:14px 0}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:10px 0}
+ol.steps>li{counter-increment:s;position:relative;padding:2px 0 14px 46px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:31px;height:31px;border-radius:50%;background:var(--ink);color:var(--paper);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+code{font-family:"JetBrains Mono",Consolas,monospace;background:var(--code);padding:1px 6px;border-radius:6px;font-size:.9em;word-break:break-word}
+.code{position:relative;margin:10px 0}
+.code pre{background:var(--code);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;margin:0;font:14px/1.55 "JetBrains Mono",Consolas,monospace}
+.copy{position:absolute;top:8px;right:8px;font:600 12px Inter,sans-serif;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 9px;cursor:pointer}
+.note{border-radius:12px;padding:13px 16px;margin:14px 0;border-left:5px solid}
+.note.tip{background:var(--green-soft);border-color:var(--green)}
+.note.warn{background:var(--gold-soft);border-color:var(--gold)}
+.note.danger{background:var(--red-soft);border-color:var(--red)}
+.note.info{background:var(--blue-soft);border-color:var(--blue)}
+.note b:first-child{display:block;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--code)}
+tr:last-child td{border-bottom:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.check li{margin:4px 0}
+.diagram svg{width:100%;height:auto;display:block}
+.diagram text{fill:var(--ink);font-family:Inter,sans-serif}
+.diagram .muted{fill:var(--muted)}
+.mock{font-family:Inter,sans-serif;background:#313338;color:#dbdee1;border-radius:12px;padding:14px 16px;font-size:14.5px}
+.mock .bot{color:#fff;font-weight:700}.mock .app{background:#5865f2;color:#fff;font-size:10px;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:4px;vertical-align:2px}
+.mock .eph{color:#949ba4;font-size:12px;margin-top:6px}
+.mock code{background:#1e1f22;color:#dbdee1}
+.contact{background:var(--ink);color:var(--paper);border-radius:20px;padding:28px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.contact h2{color:var(--paper);margin:0 0 6px}
+.contact .tag{font-family:"JetBrains Mono",monospace;font-size:24px;font-weight:600;color:var(--gold);background:rgba(255,255,255,.06);padding:8px 14px;border-radius:10px}
+.contact p{margin:4px 0;color:var(--paper);opacity:.85}
+details{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:10px 0}
+details summary{cursor:pointer;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 50px}
+.theme{position:fixed;right:14px;bottom:14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:99px;padding:8px 13px;cursor:pointer;font:600 13px Inter,sans-serif;z-index:5}
+kbd{font-family:"JetBrains Mono",monospace;border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:0 6px;font-size:.85em;background:var(--paper)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="badge">🪙 Minecraft · Discord · YouTube</span>
+  <h1>Бот, который платит <span class="coin">MediaCoin</span> за просмотры</h1>
+  <p class="lead">Полная инструкция с нуля. Не нужно уметь программировать: просто иди по шагам сверху вниз. Примерно 40–60 минут на всё.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="MediaBot.zip" download>⬇ Скачать файлы бота (ZIP)</a>
+    <a class="btn" href="#help">💬 Нужна помощь?</a>
+  </div>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Содержание">
+  <b>Содержание</b>
+  <a href="#how">0. Как это работает</a>
+  <a href="#need">1. Что понадобится</a>
+  <a href="#download">2. Скачать файлы</a>
+  <a href="#python">3. Установить Python</a>
+  <a href="#rcon">4. Включить RCON</a>
+  <a href="#rcontest">5. Проверить RCON</a>
+  <a href="#coin">6. Команда монеты</a>
+  <a href="#discord">7. Создать Discord-бота</a>
+  <a href="#ids">8. ID сервера и канала</a>
+  <a href="#youtube">9. Ключ YouTube</a>
+  <a href="#settings">10. Заполнить settings.txt</a>
+  <a href="#run">11. Запуск</a>
+  <a href="#players">12. Как пользуются игроки</a>
+  <a href="#admin">13. Команды админа</a>
+  <a href="#manual">14. Без RCON (ручной режим)</a>
+  <a href="#hosting">15. Бот 24/7 онлайн</a>
+  <a href="#errors">16. Частые ошибки</a>
+  <a href="#safety">17. Безопасность</a>
+  <a href="#help">18. Помощь</a>
+</nav>
+
+<main>
+
+<!-- 0 -->
+<section id="how">
+<h2><span class="n">0</span>Как это работает</h2>
+<p>На сервере есть ранг <b>Media</b>: за каждые <b>100 просмотров</b> видео игрок получает <b>1 MediaCoin</b>. Бот делает это автоматически:</p>
+<div class="card diagram">
+<svg viewBox="0 0 760 270" role="img" aria-label="Схема работы бота">
+  <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c98a12"/></marker></defs>
+  <rect x="10" y="30" width="190" height="86" rx="14" fill="none" stroke="#5865f2" stroke-width="2.5"/>
+  <text x="105" y="64" text-anchor="middle" font-weight="700" font-size="17">Игрок в Discord</text>
+  <text x="105" y="90" text-anchor="middle" font-size="13" class="muted">/link · /video</text>
+  <rect x="285" y="30" width="190" height="86" rx="14" fill="none" stroke="#c98a12" stroke-width="3.5"/>
+  <text x="380" y="64" text-anchor="middle" font-weight="700" font-size="17">MediaBot</text>
+  <text x="380" y="90" text-anchor="middle" font-size="13" class="muted">Python + база</text>
+  <rect x="560" y="30" width="190" height="86" rx="14" fill="none" stroke="#2f7d3b" stroke-width="2.5"/>
+  <text x="655" y="64" text-anchor="middle" font-weight="700" font-size="17">Minecraft-сервер</text>
+  <text x="655" y="90" text-anchor="middle" font-size="13" class="muted">команда give</text>
+  <rect x="285" y="180" width="190" height="70" rx="14" fill="none" stroke="#b23a2e" stroke-width="2.5"/>
+  <text x="380" y="212" text-anchor="middle" font-weight="700" font-size="17">YouTube API</text>
+  <text x="380" y="234" text-anchor="middle" font-size="13" class="muted">просмотры</text>
+  <line x1="200" y1="73" x2="280" y2="73" stroke="#c98a12" stroke-width="2.5" marker-end="url(#ar)"/>
+  <line x1="475" y1="73" x2="555" y2="73" stroke="#c98a12" stroke-width="2.5" marker-end="url(#ar)"/>
+  <text x="515" y="60" text-anchor="middle" font-size="12" class="muted">RCON</text>
+  <line x1="380" y1="176" x2="380" y2="121" stroke="#c98a12" stroke-width="2.5" marker-end="url(#ar)"/>
+  <text x="392" y="154" font-size="12" class="muted">раз в час</text>
+</svg>
+</div>
+<ol class="steps">
+  <li>Игрок пишет боту <code>/link Ник</code> и получает личный код, например <code>TOL-4821</code>.</li>
+  <li>Вставляет код в <b>описание</b> своего YouTube-видео и пишет <code>/video ссылка</code>.</li>
+  <li>Бот проверяет, что код есть в описании, значит видео действительно его.</li>
+  <li>Раз в час бот смотрит просмотры и через <b>RCON</b> (удалённую консоль сервера) выдаёт монеты.</li>
+</ol>
+<div class="note info"><b>Защита от обмана</b>Одно видео можно зарегистрировать только один раз. Бот помнит, сколько монет уже выдано за каждое видео, и выдаёт только разницу. Чужое видео (например, MrBeast) не примется — там нет твоего кода.</div>
+</section>
+
+<!-- 1 -->
+<section id="need">
+<h2><span class="n">1</span>Что понадобится</h2>
+<div class="card">
+<ul class="check">
+  <li>✅ Компьютер с <b>Windows</b> (для начала бот работает на нём).</li>
+  <li>✅ Свой <b>Minecraft-сервер</b> (Paper/Spigot, версия 1.21.4 или новее для монеты из этой инструкции) с доступом к <code>server.properties</code> — через панель хостинга или файлы.</li>
+  <li>✅ Свой <b>Discord-сервер</b>, где ты админ.</li>
+  <li>✅ <b>Google-аккаунт</b> (для бесплатного ключа YouTube).</li>
+  <li>✅ 40–60 минут времени.</li>
+</ul>
+</div>
+</section>
+
+<!-- 2 -->
+<section id="download">
+<h2><span class="n">2</span>Скачать файлы</h2>
+<ol class="steps">
+  <li>Нажми <a href="MediaBot.zip" download><b>Скачать MediaBot.zip</b></a>.</li>
+  <li>Нажми на архив ПКМ → <b>Извлечь все…</b> → выбери папку, например <code>C:\MediaBot</code>.</li>
+  <li>Внутри должно быть 8 файлов:</li>
+</ol>
+<div class="tbl"><table>
+<tr><th>Файл</th><th>Зачем</th></tr>
+<tr><td><code>bot.py</code></td><td>Сам бот</td></tr>
+<tr><td><code>rcon_client.py</code></td><td>Связь с Minecraft-сервером</td></tr>
+<tr><td><code>settings.txt</code></td><td>Настройки: токены, пароли, правила — <b>это заполняешь ты</b></td></tr>
+<tr><td><code>requirements.txt</code></td><td>Список библиотек (ставится сам)</td></tr>
+<tr><td><code>ZAPUSK_BOT.bat</code></td><td>Запуск бота двойным кликом</td></tr>
+<tr><td><code>STOP_BOT.bat</code></td><td>Закрыть все копии бота</td></tr>
+<tr><td><code>rcon_test.py</code> + <code>ZAPUSK_TEST.bat</code></td><td>Проверка связи с сервером</td></tr>
+</table></div>
+<div class="note tip"><b>Файлы также лежат по отдельности</b>Смотри папку <a id="botfolder" href="https://github.com/magomedovex-code/mediacoin-bot/tree/main/bot">bot</a> в репозитории на GitHub.</div>
+</section>
+
+<!-- 3 -->
+<section id="python">
+<h2><span class="n">3</span>Установить Python</h2>
+<ol class="steps">
+  <li>Открой <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org/downloads</a> и нажми большую жёлтую кнопку <b>Download Python</b>.</li>
+  <li>Запусти скачанный файл.</li>
+  <li><b>ВАЖНО:</b> внизу первого окна поставь галочку <b>«Add python.exe to PATH»</b>.</li>
+  <li>Нажми <b>Install Now</b> и дождись конца.</li>
+</ol>
+<div class="note warn"><b>Забыл галочку?</b>Запусти установщик снова → <b>Modify</b> → дальше → отметь «Add Python to environment variables». Или просто переустанови.</div>
+</section>
+
+<!-- 4 -->
+<section id="rcon">
+<h2><span class="n">4</span>Включить RCON на сервере</h2>
+<p><b>RCON</b> — это удалённая консоль. Через неё бот отправляет серверу команду <code>give</code>, как будто админ пишет в консоль.</p>
+<ol class="steps">
+  <li>Останови Minecraft-сервер.</li>
+  <li>Открой файл <code>server.properties</code> (в панели хостинга это обычно «Файлы / File Manager»).</li>
+  <li>Найди и поменяй эти строки (если их нет — допиши):
+  <div class="code"><pre>enable-rcon=true
+rcon.port=25575
+rcon.password=ПридумайДлинныйПароль123</pre></div>
+  </li>
+  <li><b>На хостинге</b> (FalixNodes, Aternos и т.п.) обычно нужно добавить <b>второй порт</b> в разделе «Network / Ports / Сеть». Хостинг выдаст номер, например <code>21860</code>. Тогда в <code>rcon.port</code> впиши <b>именно этот номер</b>.<br><b>Дома на своём ПК</b> — открой порт 25575 в роутере (port forwarding), если бот будет работать на другом компьютере.</li>
+  <li>Запусти сервер. В консоли должна появиться строка:
+  <div class="code"><pre>RCON running on 0.0.0.0:25575</pre></div>
+  (с твоим портом). Значит RCON работает.</li>
+</ol>
+<div class="note danger"><b>Пароль RCON = полный доступ к консоли</b>Делай его длинным и никому не давай. Кто знает пароль — может выполнить любую команду на сервере.</div>
+<div class="note info"><b>Нет доступа к server.properties или хостинг не даёт второй порт?</b>Ничего страшного — используй <a href="#manual">ручной режим</a>: бот будет писать админу, кому сколько выдать.</div>
+</section>
+
+<!-- 5 -->
+<section id="rcontest">
+<h2><span class="n">5</span>Проверить RCON</h2>
+<ol class="steps">
+  <li>Сервер должен быть <b>запущен</b>.</li>
+  <li>Двойной клик по <code>ZAPUSK_TEST.bat</code>. Если Windows покажет синее окно — «Подробнее» → «Выполнить в любом случае».</li>
+  <li>Впиши адрес сервера (без порта, например <code>play.myserver.net</code> или IP), порт RCON и пароль. Пароль при вводе <b>не виден</b> — это нормально.</li>
+  <li>Должно написать:
+  <div class="code"><pre>Подключено! Пароль принят.
+Ответ сервера: There are 0 of a max of 20 players online:</pre></div>
+  </li>
+</ol>
+<p>Если ошибка — смотри <a href="#errors">таблицу ошибок</a>.</p>
+</section>
+
+<!-- 6 -->
+<section id="coin">
+<h2><span class="n">6</span>Команда выдачи монеты</h2>
+<p>По умолчанию MediaCoin — это бумага, которая <b>выглядит как командный блок</b> и называется золотым «MediaCoin». Её нельзя поставить на землю, даже в креативе.</p>
+<p>Проверь в консоли сервера или в окне теста RCON (без <code>/</code>, ник — свой, ты должен быть онлайн):</p>
+<div class="code"><pre>minecraft:give ТвойНик paper[item_model="minecraft:command_block",custom_name={text:"MediaCoin",color:"gold",italic:false}] 1</pre></div>
+<p>Ответ должен начинаться с <code>Gave 1 [MediaCoin]</code>. Бот смотрит именно на слово <b>Gave</b>.</p>
+<div class="note warn"><b>Почему <code>minecraft:</code> в начале?</b>Плагин <b>Essentials</b> подменяет команду <code>give</code> своей, а она не понимает свойства предмета в <code>[...]</code>. Приставка <code>minecraft:</code> вызывает обычную команду игры.</div>
+<details>
+<summary>У меня на сервере уже есть своя монета — как сделать такую же?</summary>
+<p>Возьми свою монету в руку и введи в чат игры:</p>
+<div class="code"><pre>/data get entity ТвойНик SelectedItem</pre></div>
+<p>Сервер покажет предмет, например <code>{id: "minecraft:command_block", count: 1, components: {"minecraft:custom_name": ...}}</code>. Из этого собирается команда <code>minecraft:give {nick} ПРЕДМЕТ[свойства] {amount}</code>. Если не получается — пришли этот ответ мне (см. <a href="#help">Помощь</a>), соберу команду.</p>
+</details>
+<details>
+<summary>У меня монеты — это деньги из плагина экономики</summary>
+<p>Тогда в <code>settings.txt</code> поставь команду плагина, например для Essentials: <code>GIVE_COMMAND=eco give {nick} {amount}</code>. Но бот ждёт в ответе слово «Gave» — для других команд напиши мне, подстрою.</p>
+</details>
+</section>
+
+<!-- 7 -->
+<section id="discord">
+<h2><span class="n">7</span>Создать Discord-бота</h2>
+<h3>7.1 Приложение и токен</h3>
+<ol class="steps">
+  <li>Открой <a href="https://discord.com/developers/applications" target="_blank" rel="noopener">discord.com/developers/applications</a> и войди.</li>
+  <li>Нажми <b>New Application</b>, назови, например, <code>MediaBot</code>, согласись с правилами → <b>Create</b>.</li>
+  <li>Слева <b>Bot</b> → <b>Reset Token</b> → <b>Copy</b>. Это <b>токен</b> — пароль бота. Сохрани его, он нужен в шаге 10.</li>
+</ol>
+<div class="note danger"><b>Токен никому не показывай и не отправляй в чаты!</b>С токеном кто угодно может управлять ботом. Если он утёк — сразу <b>Reset Token</b>, старый перестанет работать.</div>
+
+<h3>7.2 Разрешение «Server Members Intent»</h3>
+<ol class="steps">
+  <li>Там же, на странице <b>Bot</b>, прокрути до <b>Privileged Gateway Intents</b>.</li>
+  <li>Включи <b>SERVER MEMBERS INTENT</b> (переключатель станет синим). Остальные два не трогай.</li>
+  <li>Внизу появится полоска — нажми <b>Save Changes</b>. Обнови страницу и проверь, что включено.</li>
+</ol>
+<p>Это нужно, чтобы бот видел новых участников и писал им приветствие.</p>
+
+<h3>7.3 Пригласить бота на свой сервер</h3>
+<ol class="steps">
+  <li>Слева <b>OAuth2</b> → <b>URL Generator</b>.</li>
+  <li>В «Scopes» отметь <b>обе</b> галочки: <code>bot</code> и <code>applications.commands</code>.</li>
+  <li>Ниже, в «Bot Permissions», отметь: <code>View Channels</code>, <code>Send Messages</code>, <code>Add Reactions</code>, <code>Read Message History</code>.</li>
+  <li>В самом низу появится ссылка — <b>Copy</b>, открой её в браузере.</li>
+  <li>Выбери свой сервер → <b>Авторизовать</b>. Бот появится в списке участников (пока «не в сети»).</li>
+</ol>
+<div class="note info"><b>Галочки пропали после перезагрузки страницы?</b>Это нормально. URL Generator ничего не сохраняет — он только собирает ссылку. Главное — открыть ссылку и добавить бота.</div>
+</section>
+
+<!-- 8 -->
+<section id="ids">
+<h2><span class="n">8</span>ID сервера и канала</h2>
+<ol class="steps">
+  <li>В Discord: <b>Настройки</b> (шестерёнка внизу) → <b>Расширенные</b> → включи <b>Режим разработчика</b>.</li>
+  <li>ПКМ по иконке своего сервера слева → <b>Копировать ID сервера</b>. Это <code>GUILD_ID</code>.</li>
+  <li>Создай <b>закрытый канал для админов</b>, например <code>#media-admin</code>. Туда бот пишет отчёты и заявки.</li>
+  <li>ПКМ по этому каналу → <b>Копировать ID канала</b>. Это <code>ADMIN_CHANNEL_ID</code>.</li>
+</ol>
+</section>
+
+<!-- 9 -->
+<section id="youtube">
+<h2><span class="n">9</span>Ключ YouTube (бесплатно)</h2>
+<ol class="steps">
+  <li>Открой <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> и войди через Google.</li>
+  <li>Сверху — выбор проекта → <b>New Project</b> → название <code>mediabot</code> → <b>Create</b>.</li>
+  <li>В поиске сверху напиши <b>YouTube Data API v3</b> → открой → <b>Enable</b>.</li>
+  <li>Слева <b>Credentials</b> → <b>Create credentials</b> → <b>API key</b> → скопируй ключ.</li>
+  <li>Рекомендуется: нажми на ключ → <b>API restrictions</b> → <b>Restrict key</b> → выбери только YouTube Data API v3 → Save.</li>
+</ol>
+<div class="note tip"><b>Бесплатного лимита хватит с запасом</b>10 000 запросов в день, а бот проверяет до 50 видео за 1 запрос.</div>
+</section>
+
+<!-- 10 -->
+<section id="settings">
+<h2><span class="n">10</span>Заполнить settings.txt</h2>
+<p>ПКМ по <code>settings.txt</code> → <b>Открыть с помощью</b> → <b>Блокнот</b>. Замени все <code>ВСТАВЬ_…</code>. Пиши <b>без кавычек и без пробелов</b> вокруг <code>=</code>.</p>
+<div class="tbl"><table>
+<tr><th>Строка</th><th>Что вписать</th></tr>
+<tr><td><code>DISCORD_TOKEN</code></td><td>Токен из шага 7.1</td></tr>
+<tr><td><code>GUILD_ID</code></td><td>ID сервера из шага 8</td></tr>
+<tr><td><code>ADMIN_CHANNEL_ID</code></td><td>ID админ-канала из шага 8</td></tr>
+<tr><td><code>WELCOME</code></td><td><code>1</code> — бот пишет новичкам приветствие в личку; <code>0</code> — нет</td></tr>
+<tr><td><code>YOUTUBE_API_KEY</code></td><td>Ключ из шага 9</td></tr>
+<tr><td><code>MODE</code></td><td><code>rcon</code> — бот выдаёт сам; <code>manual</code> — выдаёт админ (<a href="#manual">шаг 14</a>)</td></tr>
+<tr><td><code>RCON_HOST</code></td><td>Адрес сервера без порта</td></tr>
+<tr><td><code>RCON_PORT</code></td><td>Порт RCON из шага 4</td></tr>
+<tr><td><code>RCON_PASSWORD</code></td><td>Пароль RCON из шага 4</td></tr>
+<tr><td><code>VIEWS_PER_COIN</code></td><td>Сколько просмотров = 1 монета (по умолчанию 100)</td></tr>
+<tr><td><code>CHECK_MINUTES</code></td><td>Как часто проверять (по умолчанию 60)</td></tr>
+<tr><td><code>CODE_PREFIX</code></td><td>Начало кода, например <code>TOL</code> → <code>TOL-4821</code></td></tr>
+<tr><td><code>GIVE_COMMAND</code></td><td>Команда монеты из шага 6</td></tr>
+</table></div>
+<p>Пример (с выдуманными значениями):</p>
+<div class="code"><pre>DISCORD_TOKEN=MTEx...очень_длинная_строка...
+GUILD_ID=1234567890123456789
+ADMIN_CHANNEL_ID=1234567890123456780
+WELCOME=1
+YOUTUBE_API_KEY=AIzaSy...
+MODE=rcon
+RCON_HOST=play.myserver.net
+RCON_PORT=25575
+RCON_PASSWORD=ПридумайДлинныйПароль123</pre></div>
+<p>Сохрани: <kbd>Ctrl</kbd>+<kbd>S</kbd>.</p>
+</section>
+
+<!-- 11 -->
+<section id="run">
+<h2><span class="n">11</span>Запуск</h2>
+<ol class="steps">
+  <li>Двойной клик по <code>ZAPUSK_BOT.bat</code>.</li>
+  <li>Первый раз он 1–2 минуты ставит библиотеку <code>discord.py</code>.</li>
+  <li>Жди строку:
+  <div class="code"><pre>Бот запущен как MediaBot#1234. Режим: rcon. Приветствие: вкл</pre></div>
+  </li>
+  <li><b>Не закрывай это окно</b> — пока оно открыто, бот работает. Свернуть можно.</li>
+</ol>
+<div class="note tip"><b>Строки про PyNaCl и davey</b>«PyNaCl is not installed, voice will NOT be supported» — это про голосовые каналы, они не нужны. Не обращай внимания.</div>
+<div class="note info"><b>Автозапуск вместе с Windows</b><kbd>Win</kbd>+<kbd>R</kbd> → напиши <code>shell:startup</code> → Enter. В открытую папку положи <b>ярлык</b> на <code>ZAPUSK_BOT.bat</code> (ПКМ по файлу → Создать ярлык → перетащить).</div>
+</section>
+
+<!-- 12 -->
+<section id="players">
+<h2><span class="n">12</span>Как пользуются игроки</h2>
+<p>Боту не пишут обычные сообщения — только команды через <code>/</code>. Их можно писать в любом канале сервера <b>или в личке с ботом</b>. Ответы видит только сам игрок.</p>
+<div class="tbl"><table>
+<tr><th>Команда</th><th>Что делает</th></tr>
+<tr><td><code>/help</code></td><td>Показывает инструкцию</td></tr>
+<tr><td><code>/link Ник</code></td><td>Привязывает ник Minecraft и выдаёт личный код (один на всё время)</td></tr>
+<tr><td><code>/video ссылка</code></td><td>Регистрирует видео YouTube или TikTok</td></tr>
+<tr><td><code>/myvideos</code></td><td>Список своих видео: просмотры, выдано, ждёт</td></tr>
+</table></div>
+<h3>YouTube — всё автоматически</h3>
+<ol class="steps">
+  <li><code>/link Ник</code> → бот даёт код, например <code>TOL-2370</code>.</li>
+  <li>В описание видео добавить код, например в конец:<div class="code"><pre>Играю на сервере!
+TOL-2370</pre></div></li>
+  <li>Подождать минуту, потом <code>/video https://youtube.com/shorts/...</code></li>
+  <li>Быть онлайн на сервере — монеты придут при ближайшей проверке.</li>
+</ol>
+<div class="mock">
+  <div><span class="bot">MediaBot</span><span class="app">APP</span></div>
+  <div>✅ Видео <b>Мой лучший клип</b> принято!<br>Сейчас 17640 просмотров → положено 176 MediaCoin.<br>Монеты придут при следующей проверке (раз в 60 мин), когда ты будешь онлайн.</div>
+  <div class="eph">👁 Это сообщение видишь только ты</div>
+</div>
+<h3>TikTok — пока через админа</h3>
+<p>TikTok не даёт ботам просто так читать просмотры. Игрок пишет код в подпись видео и отправляет <code>/video</code> с <b>полной</b> ссылкой (<code>tiktok.com/@ник/video/123…</code>, не <code>vm.tiktok.com</code>). Бот присылает заявку в админ-канал, админ проверяет и вписывает просмотры командой <code>/setviews</code>.</p>
+<div class="note info"><b>Игрок не в сети или сервер спит?</b>Монеты не пропадают. Бот выдаст их при следующей проверке, когда игрок будет онлайн. Если инвентарь полный — монеты упадут рядом.</div>
+</section>
+
+<!-- 13 -->
+<section id="admin">
+<h2><span class="n">13</span>Команды админа</h2>
+<p>Видны только тем, у кого на Discord-сервере есть право «Администратор». Работают только на сервере (не в личке).</p>
+<div class="tbl"><table>
+<tr><th>Команда</th><th>Что делает</th></tr>
+<tr><td><code>/checknow</code></td><td>Проверить просмотры и выдать монеты прямо сейчас, с отчётом</td></tr>
+<tr><td><code>/setviews video views</code></td><td>Вписать просмотры вручную (для TikTok). Можно вставить ссылку или ID вида <code>tt:123…</code></td></tr>
+<tr><td><code>/unlink user</code></td><td>Отвязать ник игрока (например, если он ошибся в нике)</td></tr>
+</table></div>
+<p>Отчёт <code>/checknow</code>:</p>
+<div class="tbl"><table>
+<tr><th>Ответ</th><th>Значит</th></tr>
+<tr><td>✅ Ник: выдано 176 MediaCoin</td><td>Всё сработало</td></tr>
+<tr><td>⏳ Ник: не в сети, выдам позже</td><td>Игрок не на сервере (или ник отличается регистром)</td></tr>
+<tr><td>⚠️ RCON: нет связи с сервером</td><td>Сервер выключен / спит / неверный порт</td></tr>
+<tr><td>⚠️ Ник: сервер ответил: …</td><td>Проблема с командой монеты — проверь шаг 6</td></tr>
+<tr><td>Никому ничего не положено.</td><td>Новых 100 просмотров ни у кого нет</td></tr>
+</table></div>
+</section>
+
+<!-- 14 -->
+<section id="manual">
+<h2><span class="n">14</span>Без RCON — ручной режим</h2>
+<p>Если нет доступа к RCON (хостинг не даёт порт, сервер не твой и т.п.):</p>
+<ol class="steps">
+  <li>В <code>settings.txt</code> поставь <code>MODE=manual</code>. RCON-строки можно не заполнять.</li>
+  <li>Обязательно укажи <code>ADMIN_CHANNEL_ID</code>.</li>
+  <li>Бот будет писать в админ-канал: «<b>Ник</b> положено <b>X MediaCoin</b>» и готовую команду.</li>
+  <li>Админ выдаёт монеты в игре и ставит реакцию ✅ под сообщением — бот запомнит, что выдано.</li>
+</ol>
+</section>
+
+<!-- 15 -->
+<section id="hosting">
+<h2><span class="n">15</span>Бот 24/7 онлайн</h2>
+<p>На твоём ПК бот работает, только пока ПК включён и окно открыто. Чтобы он работал всегда, его переносят на <b>хостинг</b> — компьютер в интернете, который не выключается.</p>
+<div class="grid2">
+<div class="card"><b>🆓 Бесплатный хостинг для ботов</b><p>В интернете есть <b>бесплатные хостинги для Discord-ботов</b> 24/7. Найди в Google: <code>free discord bot hosting python</code>. Выбирай такой, где:</p>
+<ul><li>поддерживается <b>Python</b>;</li><li>можно загрузить свои файлы;</li><li>бот <b>не засыпает</b> (читай условия);</li><li>файлы сохраняются после перезапуска.</li></ul></div>
+<div class="card"><b>💶 Недорогой VPS</b><p>Самый надёжный вариант: свой маленький сервер в интернете за несколько евро в месяц. Подходит, когда бот нужен для настоящего большого сервера.</p></div>
+</div>
+<h3>Как перенести бота на хостинг</h3>
+<ol class="steps">
+  <li>Загрузи файлы: <code>bot.py</code>, <code>rcon_client.py</code>, <code>settings.txt</code>, <code>requirements.txt</code>. Файлы <code>.bat</code> там не нужны.</li>
+  <li>Если бот уже работал на ПК — загрузи и <code>mediacoin.db</code> (база, кто что получил).</li>
+  <li>Команда запуска на хостинге: <code>python bot.py</code> (или выбери <code>bot.py</code> как главный файл). Библиотеки ставятся из <code>requirements.txt</code>.</li>
+  <li><b>Выключи бота на ПК!</b> Два бота с одним токеном мешают друг другу (ошибка «session has been invalidated»).</li>
+</ol>
+<div class="note warn"><b>Осторожно с бесплатными хостингами</b>Ты загружаешь туда токен и пароль RCON. Используй известные сервисы с хорошими отзывами. Если сомневаешься — сделай <b>Reset Token</b> после переезда на другой хостинг.</div>
+</section>
+
+<!-- 16 -->
+<section id="errors">
+<h2><span class="n">16</span>Частые ошибки</h2>
+<div class="tbl"><table>
+<tr><th>Что написано</th><th>Как исправить</th></tr>
+<tr><td>Python не найден</td><td>Переустанови Python с галочкой «Add python.exe to PATH» (шаг 3).</td></tr>
+<tr><td>В settings.txt не заполнено: …</td><td>Остались <code>ВСТАВЬ_…</code> в этой строке. Заполни.</td></tr>
+<tr><td><code>403 Forbidden … Missing Access</code> или «Discord не пускает бота на сервер»</td><td>Бот не добавлен на сервер или без <code>applications.commands</code> → заново шаг 7.3. Проверь <code>GUILD_ID</code>.</td></tr>
+<tr><td>«не включено разрешение Server Members Intent»</td><td>Шаг 7.2 — включи и обязательно нажми <b>Save Changes</b>. Или поставь <code>WELCOME=0</code>.</td></tr>
+<tr><td><code>session has been invalidated</code> много раз подряд</td><td>Бот запущен в двух местах (ПК + хостинг или два окна). Запусти <code>STOP_BOT.bat</code>, выключи бота на хостинге. Не помогло — <b>Reset Token</b> и новый токен в settings.txt.</td></tr>
+<tr><td>Бот УЖЕ запущен на этом компьютере</td><td>Открыто второе окно. Закрой лишнее или <code>STOP_BOT.bat</code>.</td></tr>
+<tr><td>Время ожидания вышло / нет связи с сервером</td><td>Сервер выключен или спит; порт RCON не открыт или неверный (шаг 4).</td></tr>
+<tr><td>Соединение отклонено</td><td><code>rcon.port</code> и порт в панели хостинга не совпадают.</td></tr>
+<tr><td>Неверный пароль RCON</td><td>Сравни с <code>rcon.password</code> в server.properties (без пробелов в конце).</td></tr>
+<tr><td>Команд нет после <code>/</code></td><td>Бот должен быть запущен. Нажми <kbd>Ctrl</kbd>+<kbd>R</kbd> в Discord. В личке команды иногда появляются через пару минут.</td></tr>
+<tr><td>В описании видео нет твоего кода</td><td>Добавь код в <b>описание</b> (не в комментарий), подожди минуту и повтори.</td></tr>
+<tr><td>Видео принято, но монет нет</td><td>Проверка раз в час. Зайди на сервер и попроси админа сделать <code>/checknow</code>.</td></tr>
+<tr><td>сервер ответил: Unknown or incomplete command</td><td>Ошибка в <code>GIVE_COMMAND</code>. Проверь команду в консоли (шаг 6), не забудь <code>minecraft:</code>.</td></tr>
+</table></div>
+</section>
+
+<!-- 17 -->
+<section id="safety">
+<h2><span class="n">17</span>Безопасность</h2>
+<ul class="check">
+  <li>🔒 <code>settings.txt</code> после заполнения <b>никому не отправляй</b>. Если надо показать — замени токены на <code>***</code>.</li>
+  <li>🔒 Токен утёк → <b>Reset Token</b>. Ключ YouTube утёк → <b>Regenerate key</b> в Google Cloud.</li>
+  <li>💾 Файл <code>mediacoin.db</code> — память бота (кто что получил). <b>Не удаляй</b> и иногда делай копию.</li>
+  <li>🛡️ В нике разрешены только латиница, цифры и <code>_</code> — так через ник нельзя подсунуть серверу другую команду.</li>
+</ul>
+</section>
+
+<!-- 18 -->
+<section id="help">
+<div class="contact">
+  <div style="flex:1;min-width:240px">
+    <h2>Что-то не работает?</h2>
+    <p>Напиши мне в Discord — помогу. Пришли текст ошибки из чёрного окна или скриншот (но <b>без токенов и паролей</b>!).</p>
+  </div>
+  <div>
+    <div class="tag" id="dtag">@gojooo69</div>
+    <button class="copy" style="position:static;margin-top:10px;background:transparent;color:inherit;border-color:rgba(255,255,255,.3)" data-copy="gojooo69">Скопировать ник</button>
+  </div>
+</div>
+<p style="color:var(--muted);font-size:14px;margin-top:12px">Как написать: в Discord нажми «Добавить в друзья», вставь <code>gojooo69</code> и отправь запрос.</p>
+</section>
+
+</main>
+</div>
+
+<footer>MediaCoin Bot · инструкция для Minecraft-серверов · сделано с ❤️</footer>
+<button class="theme" id="themeBtn" type="button">🌓 Тема</button>
+
+<script>
+document.querySelectorAll('.code').forEach(function(box){
+  var b=document.createElement('button');b.className='copy';b.type='button';b.textContent='Копировать';
+  b.onclick=function(){copy(box.querySelector('pre').innerText,b)};box.appendChild(b);
+});
+document.querySelectorAll('[data-copy]').forEach(function(b){b.onclick=function(){copy(b.dataset.copy,b)}});
+function copy(t,b){
+  var done=function(){var o=b.textContent;b.textContent='Скопировано ✓';setTimeout(function(){b.textContent=o},1400)};
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(done,done)}else{done()}
+}
+(function(){
+  var r=document.documentElement,k='mb-theme';
+  try{var s=localStorage.getItem(k);if(s)r.dataset.theme=s}catch(e){}
+  document.getElementById('themeBtn').onclick=function(){
+    var dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    r.dataset.theme=dark?'light':'dark';try{localStorage.setItem(k,r.dataset.theme)}catch(e){}
+  };
+})();
+</script>
+</body>
+</html>
