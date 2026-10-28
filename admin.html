@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MediaBot — команды админа</title>
+<meta name="description" content="Шпаргалка по командам владельца и админов MediaCoin-бота: список Media, просмотры, выдача монет.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea;--paper:#fffdf8;--ink:#1c1b19;--muted:#6a655c;--line:#e2dccf;
+  --gold:#c98a12;--gold-soft:#fbefd2;--green:#2f7d3b;--green-soft:#e2f2e2;
+  --red:#b23a2e;--red-soft:#fbe5e1;--blue:#3b5bdb;--blue-soft:#e6ebfd;--code:#f0ebe0;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121210;--paper:#1b1a17;--ink:#ece8df;--muted:#a19b90;--line:#2f2d28;
+  --gold:#f0b43c;--gold-soft:#3a2e14;--green:#6fcf7c;--green-soft:#1b2e1d;
+  --red:#ef7b6e;--red-soft:#3a1d19;--blue:#8ea4ff;--blue-soft:#1d2340;--code:#25231f;}}
+:root[data-theme="dark"]{
+  --bg:#121210;--paper:#1b1a17;--ink:#ece8df;--muted:#a19b90;--line:#2f2d28;
+  --gold:#f0b43c;--gold-soft:#3a2e14;--green:#6fcf7c;--green-soft:#1b2e1d;
+  --red:#ef7b6e;--red-soft:#3a1d19;--blue:#8ea4ff;--blue-soft:#1d2340;--code:#25231f;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.65 Inter,system-ui,sans-serif}
+a{color:var(--blue)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:240px 1fr;gap:40px}
+@media(max-width:860px){.wrap{grid-template-columns:1fr;gap:0}nav.toc{display:none}}
+header.hero{max-width:1120px;margin:0 auto;padding:56px 16px 36px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-soft);color:var(--gold);font-weight:700;font-size:13px;padding:5px 12px;border-radius:99px;letter-spacing:.04em;text-transform:uppercase}
+h1{font-family:Unbounded,Inter,sans-serif;font-weight:800;font-size:clamp(30px,5.5vw,54px);line-height:1.08;margin:18px 0 14px;letter-spacing:-.01em}
+h1 .coin{color:var(--gold)}
+.lead{font-size:19px;color:var(--muted);max-width:720px;margin:0}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:12px;font-weight:700;text-decoration:none;border:2px solid var(--ink);color:var(--ink);background:transparent}
+.btn.primary{background:var(--gold);border-color:var(--gold);color:#1c1b19}
+.btn:hover{transform:translateY(-1px)}
+nav.toc{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto;padding:8px 0 30px;font-size:14px}
+nav.toc b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px}
+nav.toc a{display:block;color:var(--ink);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line)}
+nav.toc a:hover{border-color:var(--gold);color:var(--gold)}
+main{min-width:0;padding-bottom:80px}
+section{scroll-margin-top:16px;margin:0 0 56px}
+h2{font-family:Unbounded,Inter,sans-serif;font-weight:600;font-size:clamp(21px,3vw,27px);margin:0 0 14px;display:flex;gap:14px;align-items:baseline}
+h2 .n{font-size:.75em;color:var(--gold);min-width:2ch}
+h3{font-size:18px;margin:26px 0 8px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:14px 0}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:10px 0}
+ol.steps>li{counter-increment:s;position:relative;padding:2px 0 14px 46px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:31px;height:31px;border-radius:50%;background:var(--ink);color:var(--paper);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+code{font-family:"JetBrains Mono",Consolas,monospace;background:var(--code);padding:1px 6px;border-radius:6px;font-size:.9em;word-break:break-word}
+.code{position:relative;margin:10px 0}
+.code pre{background:var(--code);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;margin:0;font:14px/1.55 "JetBrains Mono",Consolas,monospace}
+.copy{position:absolute;top:8px;right:8px;font:600 12px Inter,sans-serif;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 9px;cursor:pointer}
+.note{border-radius:12px;padding:13px 16px;margin:14px 0;border-left:5px solid}
+.note.tip{background:var(--green-soft);border-color:var(--green)}
+.note.warn{background:var(--gold-soft);border-color:var(--gold)}
+.note.danger{background:var(--red-soft);border-color:var(--red)}
+.note.info{background:var(--blue-soft);border-color:var(--blue)}
+.note b:first-child{display:block;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--code)}
+tr:last-child td{border-bottom:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.check li{margin:4px 0}
+.diagram svg{width:100%;height:auto;display:block}
+.diagram text{fill:var(--ink);font-family:Inter,sans-serif}
+.diagram .muted{fill:var(--muted)}
+.mock{font-family:Inter,sans-serif;background:#313338;color:#dbdee1;border-radius:12px;padding:14px 16px;font-size:14.5px}
+.mock .bot{color:#fff;font-weight:700}.mock .app{background:#5865f2;color:#fff;font-size:10px;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:4px;vertical-align:2px}
+.mock .eph{color:#949ba4;font-size:12px;margin-top:6px}
+.mock code{background:#1e1f22;color:#dbdee1}
+.contact{background:var(--ink);color:var(--paper);border-radius:20px;padding:28px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.contact h2{color:var(--paper);margin:0 0 6px}
+.contact .tag{font-family:"JetBrains Mono",monospace;font-size:24px;font-weight:600;color:var(--gold);background:rgba(255,255,255,.06);padding:8px 14px;border-radius:10px}
+.contact p{margin:4px 0;color:var(--paper);opacity:.85}
+details{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:10px 0}
+details summary{cursor:pointer;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 50px}
+.theme{position:fixed;right:14px;bottom:14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:99px;padding:8px 13px;cursor:pointer;font:600 13px Inter,sans-serif;z-index:5}
+kbd{font-family:"JetBrains Mono",monospace;border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:0 6px;font-size:.85em;background:var(--paper)}
+.search{width:100%;max-width:520px;margin-top:24px;padding:13px 16px;border-radius:12px;border:2px solid var(--line);background:var(--paper);color:var(--ink);font:16px Inter,sans-serif}
+.search:focus{outline:none;border-color:var(--gold)}
+.cmd{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:14px 0}
+.cmd-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:6px}
+.cmd-name{font:600 19px "JetBrains Mono",Consolas,monospace}
+.role{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+.role.owner{background:var(--gold-soft);color:var(--gold)}
+.role.admin{background:var(--blue-soft);color:var(--blue)}
+.role.player{background:var(--green-soft);color:var(--green)}
+.cmd p{margin:6px 0}
+.params{margin:8px 0 4px;padding-left:20px}
+.params li{margin:3px 0}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0}
+.hidden{display:none!important}
+.empty{color:var(--muted);font-style:italic}
+.toplink{font-weight:700}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="badge">🛡️ Шпаргалка · MediaBot</span>
+  <h1>Команды <span class="coin">админа</span></h1>
+  <p class="lead">Все команды владельца и админов в одном месте. Пиши их на своём Discord-сервере, начиная с <code>/</code>. Ответы бота видишь только ты.</p>
+  <div class="legend">
+    <span class="role owner">Владелец</span><span style="color:var(--muted);font-size:14px">только владелец Discord-сервера (и люди из <code>MANAGER_IDS</code>)</span>
+  </div>
+  <div class="legend" style="margin-top:6px">
+    <span class="role admin">Админ</span><span style="color:var(--muted);font-size:14px">все, у кого есть право «Администратор»</span>
+  </div>
+  <input class="search" id="q" type="search" placeholder="🔍 Найти команду: tiktok, монеты, ник…" aria-label="Поиск команды">
+  <div class="hero-actions">
+    <a class="btn" href="./">← Полная инструкция по установке</a>
+  </div>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Содержание">
+  <b>Содержание</b>
+  <a href="#owner">Список Media</a>
+  <a href="#admin">Просмотры и монеты</a>
+  <a href="#manual">Ручной режим (✅)</a>
+  <a href="#report">Отчёт /checknow</a>
+  <a href="#channel">Сообщения в админ-канале</a>
+  <a href="#cases">Что делать, если…</a>
+  <a href="#players">Команды игроков</a>
+</nav>
+
+<main>
+
+<section id="owner">
+<h2><span class="n">1</span>Список Media</h2>
+<p>Бот работает только для людей из этого списка и больше никому сам не пишет.</p>
+
+<div class="cmd" data-k="addmedia добавить media список ник новый игрок код">
+  <div class="cmd-head"><span class="cmd-name">/addmedia</span><span class="role owner">Владелец</span></div>
+  <p>Добавить человека в Media. Бот пришлёт <b>только ему</b> в личку инструкцию (и код, если указан ник Minecraft).</p>
+  <ul class="params">
+    <li><code>user</code> — начни писать его ник в Discord и выбери из списка</li>
+    <li><code>minecraft</code> — <i>необязательно</i>: его ник в игре. Тогда бот сразу привяжет ник и выдаст код</li>
+  </ul>
+  <div class="code"><pre>/addmedia user:@Steve minecraft:Steve_YT</pre></div>
+  <p style="color:var(--muted);font-size:14px">Если у человека закрыта личка, бот скажет тебе об этом. Попроси его самому написать боту <code>/help</code>.</p>
+</div>
+
+<div class="cmd" data-k="removemedia убрать удалить media список выгнать">
+  <div class="cmd-head"><span class="cmd-name">/removemedia</span><span class="role owner">Владелец</span></div>
+  <p>Убрать человека из Media. Бот перестаёт принимать его видео и выдавать ему монеты. Ник и видео остаются в базе: если добавить снова, всё продолжится.</p>
+  <div class="code"><pre>/removemedia user:@Steve</pre></div>
+</div>
+
+<div class="cmd" data-k="medialist список media кто все люди">
+  <div class="cmd-head"><span class="cmd-name">/medialist</span><span class="role owner">Владелец</span></div>
+  <p>Показать, кто сейчас в Media: их ники в Minecraft и сколько у каждого видео.</p>
+  <div class="code"><pre>/medialist</pre></div>
+</div>
+</section>
+
+<section id="admin">
+<h2><span class="n">2</span>Просмотры и монеты</h2>
+
+<div class="cmd" data-k="checknow проверить сейчас выдать монеты отчёт просмотры">
+  <div class="cmd-head"><span class="cmd-name">/checknow</span><span class="role admin">Админ</span></div>
+  <p>Проверить просмотры YouTube и TikTok и выдать монеты <b>прямо сейчас</b>, не дожидаясь проверки раз в час. Показывает отчёт (что он значит — <a href="#report">ниже</a>).</p>
+  <div class="code"><pre>/checknow</pre></div>
+</div>
+
+<div class="cmd" data-k="setviews просмотры вручную tiktok вписать число видео">
+  <div class="cmd-head"><span class="cmd-name">/setviews</span><span class="role admin">Админ</span></div>
+  <p>Вписать просмотры видео вручную. Нужно, если TikTok не дал боту прочитать просмотры. Видео «на проверке» после этого сразу становится активным.</p>
+  <ul class="params">
+    <li><code>video</code> — ссылка на видео или ID из сообщения бота, например <code>tt:7412345678901234567</code></li>
+    <li><code>views</code> — сколько сейчас просмотров (посмотри в самом TikTok)</li>
+  </ul>
+  <div class="code"><pre>/setviews video:tt:7412345678901234567 views:17640</pre></div>
+  <p style="color:var(--muted);font-size:14px">Монеты придут при следующей проверке или сразу после <code>/checknow</code>.</p>
+</div>
+
+<div class="cmd" data-k="unlink отвязать ник ошибся сменить ник minecraft">
+  <div class="cmd-head"><span class="cmd-name">/unlink</span><span class="role admin">Админ</span></div>
+  <p>Отвязать ник Minecraft от игрока, например если он ошибся в нике. После этого игрок снова пишет <code>/link</code> с правильным ником. Его видео не пропадут.</p>
+  <div class="code"><pre>/unlink user:@Steve</pre></div>
+</div>
+</section>
+
+<section id="manual">
+<h2><span class="n">3</span>Ручной режим (✅)</h2>
+<div class="cmd" data-k="ручной manual реакция галочка выдать сам rcon">
+  <div class="cmd-head"><span class="cmd-name">реакция ✅</span><span class="role admin">Админ</span></div>
+  <p>Только если в <code>settings.txt</code> стоит <code>MODE=manual</code>. Бот пишет в админ-канал, кому сколько монет положено, и готовую команду. Выдай монеты в игре, потом поставь ✅ под этим сообщением — бот запомнит, что выдано.</p>
+  <div class="mock">
+    <div><span class="bot">MediaBot</span><span class="app">APP</span></div>
+    <div>🪙 <b>Steve_YT</b> положено <b>12 MediaCoin</b>.<br>Выдай в игре и поставь ✅ под этим сообщением.<br><code>minecraft:give Steve_YT paper[…] 12</code></div>
+  </div>
+  <p style="color:var(--muted);font-size:14px">Не ставь ✅, пока не выдал: бот поверит и больше не напомнит.</p>
+</div>
+</section>
+
+<section id="report">
+<h2><span class="n">4</span>Отчёт /checknow</h2>
+<div class="tbl"><table>
+<tr><th>Ответ</th><th>Значит</th></tr>
+<tr><td>✅ Ник: выдано 176 MediaCoin</td><td>Всё сработало, монеты у игрока</td></tr>
+<tr><td>🎵 Ник: TikTok проверен автоматически, код найден</td><td>TikTok-видео «на проверке» прочиталось, теперь оно активное</td></tr>
+<tr><td>⏳ Ник: не в сети, выдам позже</td><td>Игрок не на сервере (или ник отличается регистром). Монеты не пропадут</td></tr>
+<tr><td>📝 Ник: заявка на 12</td><td>Ручной режим: заявка ушла в админ-канал, ждёт ✅</td></tr>
+<tr><td>⚠️ RCON: нет связи с сервером</td><td>Сервер выключен, спит, или неверный порт/пароль RCON</td></tr>
+<tr><td>⚠️ Ник: сервер ответил: …</td><td>Проблема с командой монеты (<code>GIVE_COMMAND</code>)</td></tr>
+<tr><td>⚠️ YouTube: …</td><td>Проблема с ключом YouTube или закончился дневной лимит</td></tr>
+<tr><td>Никому ничего не положено.</td><td>Ни у кого нет новых 100 просмотров</td></tr>
+</table></div>
+</section>
+
+<section id="channel">
+<h2><span class="n">5</span>Сообщения в админ-канале</h2>
+<div class="tbl"><table>
+<tr><th>Сообщение бота</th><th>Что сделать</th></tr>
+<tr><td>✅ Ник: выдано N MediaCoin</td><td>Ничего, это просто отчёт</td></tr>
+<tr><td>🎵 Заявка TikTok от … — автоматически прочитать не вышло</td><td>Открой ссылку, проверь, что в подписи есть код игрока, и впиши просмотры: <code>/setviews</code></td></tr>
+<tr><td>⚠️ Не могу прочитать просмотры TikTok-видео … 3 раза подряд</td><td>Впиши просмотры через <code>/setviews</code>. Если так со всеми TikTok — перезапусти бота (обновится <code>yt-dlp</code>)</td></tr>
+<tr><td>🪙 Ник положено N MediaCoin</td><td>Ручной режим: выдай в игре и поставь ✅</td></tr>
+</table></div>
+</section>
+
+<section id="cases">
+<h2><span class="n">6</span>Что делать, если…</h2>
+<details><summary>Игрок пишет «меня нет в списке Media»</summary><p>Добавь его: <code>/addmedia user:@ник</code>. Это может сделать только владелец сервера.</p></details>
+<details><summary>Игрок ошибся в нике Minecraft</summary><p><code>/unlink user:@ник</code>, потом игрок снова пишет <code>/link ПравильныйНик</code>.</p></details>
+<details><summary>Монеты не пришли</summary><p>Проверка идёт раз в час, и игрок должен быть онлайн. Попроси его зайти на сервер и сделай <code>/checknow</code> — в отчёте будет видно, в чём дело.</p></details>
+<details><summary>TikTok-видео висит «на проверке»</summary><p>Значит, TikTok не дал боту прочитать данные. Бот сам попробует ещё раз при следующей проверке. Не хочешь ждать — открой видео, посмотри просмотры и впиши их: <code>/setviews</code>.</p></details>
+<details><summary>Кто-то накручивает просмотры или выложил не про сервер</summary><p>Убери его из Media: <code>/removemedia user:@ник</code>. Бот сразу перестанет выдавать ему монеты.</p></details>
+<details><summary>Не вижу команд владельца после /</summary><p>Они видны только тем, у кого есть право «Администратор». Убедись, что бот запущен, и нажми <kbd>Ctrl</kbd>+<kbd>R</kbd> в Discord.</p></details>
+<p class="empty hidden" id="nores">Ничего не нашлось. Попробуй другое слово.</p>
+</section>
+
+<section id="players">
+<h2><span class="n">7</span>Команды игроков</h2>
+<p>Для справки — что могут люди из списка Media:</p>
+<div class="tbl"><table>
+<tr><th>Команда</th><th>Что делает</th></tr>
+<tr><td><code>/help</code></td><td>Инструкция</td></tr>
+<tr><td><code>/link Ник</code></td><td>Привязать ник Minecraft и получить личный код</td></tr>
+<tr><td><code>/video ссылка</code></td><td>Зарегистрировать YouTube- или TikTok-видео (код должен быть в описании/подписи)</td></tr>
+<tr><td><code>/myvideos</code></td><td>Свои видео: просмотры, выдано, ждёт</td></tr>
+</table></div>
+</section>
+
+<section id="help">
+<div class="contact">
+  <div style="flex:1;min-width:240px">
+    <h2>Что-то не работает?</h2>
+    <p>Напиши мне в Discord. Пришли текст ошибки или скриншот (но <b>без токенов и паролей</b>!).</p>
+  </div>
+  <div>
+    <div class="tag">@gojooo69</div>
+    <button class="copy" style="position:static;margin-top:10px;background:transparent;color:inherit;border-color:rgba(255,255,255,.3)" data-copy="gojooo69">Скопировать ник</button>
+  </div>
+</div>
+</section>
+
+</main>
+</div>
+
+<footer>MediaBot · команды админа · <a href="./">инструкция по установке</a></footer>
+<button class="theme" id="themeBtn" type="button">🌓 Тема</button>
+
+<script>
+document.querySelectorAll('.code').forEach(function(box){
+  var b=document.createElement('button');b.className='copy';b.type='button';b.textContent='Копировать';
+  b.onclick=function(){copy(box.querySelector('pre').innerText,b)};box.appendChild(b);
+});
+document.querySelectorAll('[data-copy]').forEach(function(b){b.onclick=function(){copy(b.dataset.copy,b)}});
+function copy(t,b){
+  var done=function(){var o=b.textContent;b.textContent='Скопировано ✓';setTimeout(function(){b.textContent=o},1400)};
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(done,done)}else{done()}
+}
+document.getElementById('q').addEventListener('input',function(){
+  var q=this.value.trim().toLowerCase(),any=false;
+  document.querySelectorAll('.cmd, details, .tbl tr:not(:first-child)').forEach(function(el){
+    var hit=!q||(el.textContent+' '+(el.dataset.k||'')).toLowerCase().indexOf(q)>-1;
+    el.classList.toggle('hidden',!hit);if(hit)any=true;
+  });
+  document.getElementById('nores').classList.toggle('hidden',any||!q);
+});
+(function(){
+  var r=document.documentElement,k='mb-theme';
+  try{var s=localStorage.getItem(k);if(s)r.dataset.theme=s}catch(e){}
+  document.getElementById('themeBtn').onclick=function(){
+    var dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    r.dataset.theme=dark?'light':'dark';try{localStorage.setItem(k,r.dataset.theme)}catch(e){}
+  };
+})();
+</script>
+</body>
+</html>

@@ -5,6 +5,9 @@ Discord-бот для Minecraft-сервера: выдаёт **MediaCoin** за 
 ## 📖 Инструкция с нуля
 👉 **https://magomedovex-code.github.io/mediacoin-bot/**
 
+## 🛡️ Команды админа
+👉 **https://magomedovex-code.github.io/mediacoin-bot/admin.html**
+
 ## ⬇ Скачать
 [MediaBot.zip](MediaBot.zip) — все файлы бота. Отдельные файлы — в папке [`bot/`](bot).
 
