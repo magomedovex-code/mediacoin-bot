@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MediaCoin Bot — инструкция</title>
-<meta name="description" content="Пошаговая инструкция с нуля: Discord-бот, который выдаёт MediaCoin за просмотры видео на Minecraft-сервере.">
+<meta name="description" content="Пошаговая инструкция с нуля: Discord-бот, который выдаёт MediaCoin за просмотры YouTube- и TikTok-видео на Minecraft-сервере.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -88,7 +88,7 @@ kbd{font-family:"JetBrains Mono",monospace;border:1px solid var(--line);border-b
 <body>
 
 <header class="hero">
-  <span class="badge">🪙 Minecraft · Discord · YouTube</span>
+  <span class="badge">🪙 Minecraft · Discord · YouTube · TikTok</span>
   <h1>Бот, который платит <span class="coin">MediaCoin</span> за просмотры</h1>
   <p class="lead">Полная инструкция с нуля. Не нужно уметь программировать: просто иди по шагам сверху вниз. Примерно 40–60 минут на всё.</p>
   <div class="hero-actions">
@@ -112,13 +112,14 @@ kbd{font-family:"JetBrains Mono",monospace;border:1px solid var(--line);border-b
   <a href="#youtube">9. Ключ YouTube</a>
   <a href="#settings">10. Заполнить settings.txt</a>
   <a href="#run">11. Запуск</a>
-  <a href="#players">12. Как пользуются игроки</a>
-  <a href="#admin">13. Команды админа</a>
-  <a href="#manual">14. Без RCON (ручной режим)</a>
-  <a href="#hosting">15. Бот 24/7 онлайн</a>
-  <a href="#errors">16. Частые ошибки</a>
-  <a href="#safety">17. Безопасность</a>
-  <a href="#help">18. Помощь</a>
+  <a href="#media">12. Список Media (владелец)</a>
+  <a href="#players">13. Как пользуются игроки</a>
+  <a href="#admin">14. Команды админа</a>
+  <a href="#manual">15. Без RCON (ручной режим)</a>
+  <a href="#hosting">16. Бот 24/7 онлайн</a>
+  <a href="#errors">17. Частые ошибки</a>
+  <a href="#safety">18. Безопасность</a>
+  <a href="#help">19. Помощь</a>
 </nav>
 
 <main>
@@ -126,13 +127,13 @@ kbd{font-family:"JetBrains Mono",monospace;border:1px solid var(--line);border-b
 <!-- 0 -->
 <section id="how">
 <h2><span class="n">0</span>Как это работает</h2>
-<p>На сервере есть ранг <b>Media</b>: за каждые <b>100 просмотров</b> видео игрок получает <b>1 MediaCoin</b>. Бот делает это автоматически:</p>
+<p>На сервере есть ранг <b>Media</b>: за каждые <b>100 просмотров</b> видео (YouTube или TikTok) игрок получает <b>1 MediaCoin</b>. Бот делает это автоматически:</p>
 <div class="card diagram">
 <svg viewBox="0 0 760 270" role="img" aria-label="Схема работы бота">
   <defs><marker id="ar" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c98a12"/></marker></defs>
   <rect x="10" y="30" width="190" height="86" rx="14" fill="none" stroke="#5865f2" stroke-width="2.5"/>
   <text x="105" y="64" text-anchor="middle" font-weight="700" font-size="17">Игрок в Discord</text>
-  <text x="105" y="90" text-anchor="middle" font-size="13" class="muted">/link · /video</text>
+  <text x="105" y="90" text-anchor="middle" font-size="13" class="muted">только из списка Media</text>
   <rect x="285" y="30" width="190" height="86" rx="14" fill="none" stroke="#c98a12" stroke-width="3.5"/>
   <text x="380" y="64" text-anchor="middle" font-weight="700" font-size="17">MediaBot</text>
   <text x="380" y="90" text-anchor="middle" font-size="13" class="muted">Python + база</text>
@@ -140,7 +141,7 @@ kbd{font-family:"JetBrains Mono",monospace;border:1px solid var(--line);border-b
   <text x="655" y="64" text-anchor="middle" font-weight="700" font-size="17">Minecraft-сервер</text>
   <text x="655" y="90" text-anchor="middle" font-size="13" class="muted">команда give</text>
   <rect x="285" y="180" width="190" height="70" rx="14" fill="none" stroke="#b23a2e" stroke-width="2.5"/>
-  <text x="380" y="212" text-anchor="middle" font-weight="700" font-size="17">YouTube API</text>
+  <text x="380" y="212" text-anchor="middle" font-weight="700" font-size="17">YouTube + TikTok</text>
   <text x="380" y="234" text-anchor="middle" font-size="13" class="muted">просмотры</text>
   <line x1="200" y1="73" x2="280" y2="73" stroke="#c98a12" stroke-width="2.5" marker-end="url(#ar)"/>
   <line x1="475" y1="73" x2="555" y2="73" stroke="#c98a12" stroke-width="2.5" marker-end="url(#ar)"/>
@@ -150,12 +151,13 @@ kbd{font-family:"JetBrains Mono",monospace;border:1px solid var(--line);border-b
 </svg>
 </div>
 <ol class="steps">
+  <li><b>Владелец</b> Discord-сервера добавляет человека в список Media: <code>/addmedia</code> + его ник в Discord. Бот пишет инструкцию <b>только ему</b> — больше никому.</li>
   <li>Игрок пишет боту <code>/link Ник</code> и получает личный код, например <code>TOL-4821</code>.</li>
-  <li>Вставляет код в <b>описание</b> своего YouTube-видео и пишет <code>/video ссылка</code>.</li>
-  <li>Бот проверяет, что код есть в описании, значит видео действительно его.</li>
+  <li>Вставляет код в <b>описание</b> YouTube-видео или <b>подпись</b> TikTok-видео и пишет <code>/video ссылка</code>.</li>
+  <li>Бот проверяет, что код есть в описании/подписи, значит видео действительно его.</li>
   <li>Раз в час бот смотрит просмотры и через <b>RCON</b> (удалённую консоль сервера) выдаёт монеты.</li>
 </ol>
-<div class="note info"><b>Защита от обмана</b>Одно видео можно зарегистрировать только один раз. Бот помнит, сколько монет уже выдано за каждое видео, и выдаёт только разницу. Чужое видео (например, MrBeast) не примется — там нет твоего кода.</div>
+<div class="note info"><b>Защита от обмана</b>Одно видео можно зарегистрировать только один раз. Бот помнит, сколько монет уже выдано за каждое видео, и выдаёт только разницу. Чужое видео (например, MrBeast) не примется — там нет твоего кода. А люди не из списка Media вообще не могут пользоваться ботом.</div>
 </section>
 
 <!-- 1 -->
@@ -272,15 +274,9 @@ rcon.password=ПридумайДлинныйПароль123</pre></div>
 </ol>
 <div class="note danger"><b>Токен никому не показывай и не отправляй в чаты!</b>С токеном кто угодно может управлять ботом. Если он утёк — сразу <b>Reset Token</b>, старый перестанет работать.</div>
 
-<h3>7.2 Разрешение «Server Members Intent»</h3>
-<ol class="steps">
-  <li>Там же, на странице <b>Bot</b>, прокрути до <b>Privileged Gateway Intents</b>.</li>
-  <li>Включи <b>SERVER MEMBERS INTENT</b> (переключатель станет синим). Остальные два не трогай.</li>
-  <li>Внизу появится полоска — нажми <b>Save Changes</b>. Обнови страницу и проверь, что включено.</li>
-</ol>
-<p>Это нужно, чтобы бот видел новых участников и писал им приветствие.</p>
+<div class="note tip"><b>«Privileged Gateway Intents» трогать не нужно</b>Бот больше не пишет всем новичкам, поэтому особые разрешения (Server Members Intent) ему не нужны. Если раньше включал — можно оставить.</div>
 
-<h3>7.3 Пригласить бота на свой сервер</h3>
+<h3>7.2 Пригласить бота на свой сервер</h3>
 <ol class="steps">
   <li>Слева <b>OAuth2</b> → <b>URL Generator</b>.</li>
   <li>В «Scopes» отметь <b>обе</b> галочки: <code>bot</code> и <code>applications.commands</code>.</li>
@@ -324,9 +320,11 @@ rcon.password=ПридумайДлинныйПароль123</pre></div>
 <tr><td><code>DISCORD_TOKEN</code></td><td>Токен из шага 7.1</td></tr>
 <tr><td><code>GUILD_ID</code></td><td>ID сервера из шага 8</td></tr>
 <tr><td><code>ADMIN_CHANNEL_ID</code></td><td>ID админ-канала из шага 8</td></tr>
-<tr><td><code>WELCOME</code></td><td><code>1</code> — бот пишет новичкам приветствие в личку; <code>0</code> — нет</td></tr>
+<tr><td><code>WELCOME_CHANNEL_ID</code></td><td>Канал, куда бот напишет человеку из Media, если у него закрыта личка. <code>0</code> — не писать</td></tr>
+<tr><td><code>MANAGER_IDS</code></td><td>Пусто = добавлять в Media может <b>только владелец</b> сервера. Можно вписать Discord ID доверенных людей через запятую</td></tr>
 <tr><td><code>YOUTUBE_API_KEY</code></td><td>Ключ из шага 9</td></tr>
-<tr><td><code>MODE</code></td><td><code>rcon</code> — бот выдаёт сам; <code>manual</code> — выдаёт админ (<a href="#manual">шаг 14</a>)</td></tr>
+<tr><td><code>TIKTOK_AUTO</code></td><td><code>1</code> — бот сам читает подпись и просмотры TikTok; <code>0</code> — только вручную</td></tr>
+<tr><td><code>MODE</code></td><td><code>rcon</code> — бот выдаёт сам; <code>manual</code> — выдаёт админ (<a href="#manual">шаг 15</a>)</td></tr>
 <tr><td><code>RCON_HOST</code></td><td>Адрес сервера без порта</td></tr>
 <tr><td><code>RCON_PORT</code></td><td>Порт RCON из шага 4</td></tr>
 <tr><td><code>RCON_PASSWORD</code></td><td>Пароль RCON из шага 4</td></tr>
@@ -339,8 +337,10 @@ rcon.password=ПридумайДлинныйПароль123</pre></div>
 <div class="code"><pre>DISCORD_TOKEN=MTEx...очень_длинная_строка...
 GUILD_ID=1234567890123456789
 ADMIN_CHANNEL_ID=1234567890123456780
-WELCOME=1
+WELCOME_CHANNEL_ID=0
+MANAGER_IDS=
 YOUTUBE_API_KEY=AIzaSy...
+TIKTOK_AUTO=1
 MODE=rcon
 RCON_HOST=play.myserver.net
 RCON_PORT=25575
@@ -353,9 +353,9 @@ RCON_PASSWORD=ПридумайДлинныйПароль123</pre></div>
 <h2><span class="n">11</span>Запуск</h2>
 <ol class="steps">
   <li>Двойной клик по <code>ZAPUSK_BOT.bat</code>.</li>
-  <li>Первый раз он 1–2 минуты ставит библиотеку <code>discord.py</code>.</li>
+  <li>Первый раз он 1–2 минуты ставит библиотеки <code>discord.py</code> и <code>yt-dlp</code> (для TikTok). Потом при каждом запуске сам обновляет <code>yt-dlp</code>.</li>
   <li>Жди строку:
-  <div class="code"><pre>Бот запущен как MediaBot#1234. Режим: rcon. Приветствие: вкл</pre></div>
+  <div class="code"><pre>Бот запущен как MediaBot#1234. Режим: rcon. TikTok авто: вкл. В списке Media: 0 чел.</pre></div>
   </li>
   <li><b>Не закрывай это окно</b> — пока оно открыто, бот работает. Свернуть можно.</li>
 </ol>
@@ -364,9 +364,34 @@ RCON_PASSWORD=ПридумайДлинныйПароль123</pre></div>
 </section>
 
 <!-- 12 -->
+<section id="media">
+<h2><span class="n">12</span>Список Media — кого добавить</h2>
+<p>Бот <b>никому не пишет сам</b>. Пользоваться им могут только люди из списка Media, а добавлять туда может <b>только владелец Discord-сервера</b>. Даже другие админы не могут (если владелец не разрешил через <code>MANAGER_IDS</code>).</p>
+<ol class="steps">
+  <li>На своём сервере (в любом канале) напиши <code>/addmedia</code>.</li>
+  <li>В поле <b>user</b> начни писать ник человека в Discord — появится список, выбери его.</li>
+  <li>Необязательно: в поле <b>minecraft</b> впиши его ник в игре. Тогда бот сразу привяжет ник и пришлёт человеку личный код.</li>
+  <li>Нажми <kbd>Enter</kbd>. Бот напишет инструкцию <b>только этому человеку</b> в личку.</li>
+</ol>
+<div class="mock">
+  <div><span class="bot">MediaBot</span><span class="app">APP</span></div>
+  <div>✅ @Steve добавлен в Media.<br>Ник <b>Steve_YT</b> привязан, код <code>TOL-2370</code>.<br>📨 Инструкцию ему отправил.</div>
+  <div class="eph">👁 Это сообщение видишь только ты</div>
+</div>
+<div class="tbl" style="margin-top:14px"><table>
+<tr><th>Команда</th><th>Что делает</th></tr>
+<tr><td><code>/addmedia user [minecraft]</code></td><td>Добавить человека в Media и написать ему инструкцию</td></tr>
+<tr><td><code>/removemedia user</code></td><td>Убрать из Media: бот перестаёт принимать его видео и выдавать монеты. Если добавить снова — всё продолжится</td></tr>
+<tr><td><code>/medialist</code></td><td>Кто сейчас в Media, их ники и сколько видео</td></tr>
+</table></div>
+<div class="note info"><b>Кто пользовался ботом раньше</b>Все, кто уже привязал ник в старой версии, автоматически остались в списке Media. Ничего добавлять заново не нужно.</div>
+<div class="note warn"><b>У человека закрыта личка?</b>Бот скажет тебе об этом. Попроси человека самому написать боту <code>/help</code> — или впиши в <code>WELCOME_CHANNEL_ID</code> канал, где бот упомянет только его.</div>
+</section>
+
+<!-- 13 -->
 <section id="players">
-<h2><span class="n">12</span>Как пользуются игроки</h2>
-<p>Боту не пишут обычные сообщения — только команды через <code>/</code>. Их можно писать в любом канале сервера <b>или в личке с ботом</b>. Ответы видит только сам игрок.</p>
+<h2><span class="n">13</span>Как пользуются игроки</h2>
+<p>Работает только для людей из <a href="#media">списка Media</a>. Боту не пишут обычные сообщения — только команды через <code>/</code>. Их можно писать в любом канале сервера <b>или в личке с ботом</b>. Ответы видит только сам игрок.</p>
 <div class="tbl"><table>
 <tr><th>Команда</th><th>Что делает</th></tr>
 <tr><td><code>/help</code></td><td>Показывает инструкцию</td></tr>
@@ -387,25 +412,32 @@ TOL-2370</pre></div></li>
   <div>✅ Видео <b>Мой лучший клип</b> принято!<br>Сейчас 17640 просмотров → положено 176 MediaCoin.<br>Монеты придут при следующей проверке (раз в 60 мин), когда ты будешь онлайн.</div>
   <div class="eph">👁 Это сообщение видишь только ты</div>
 </div>
-<h3>TikTok — пока через админа</h3>
-<p>TikTok не даёт ботам просто так читать просмотры. Игрок пишет код в подпись видео и отправляет <code>/video</code> с <b>полной</b> ссылкой (<code>tiktok.com/@ник/video/123…</code>, не <code>vm.tiktok.com</code>). Бот присылает заявку в админ-канал, админ проверяет и вписывает просмотры командой <code>/setviews</code>.</p>
+<h3>TikTok — тоже автоматически</h3>
+<ol class="steps">
+  <li>Вставить код в <b>подпись</b> TikTok-видео (при публикации или потом: <b>…</b> → <b>Изменить</b>).</li>
+  <li>Скопировать ссылку на видео (<b>Поделиться</b> → <b>Копировать ссылку</b>). Подходят и короткие <code>vm.tiktok.com/…</code>, и полные.</li>
+  <li><code>/video ссылка</code> — бот сам откроет видео, найдёт код в подписи и запомнит просмотры.</li>
+  <li>Дальше раз в час бот обновляет просмотры TikTok так же, как YouTube.</li>
+</ol>
+<div class="note warn"><b>Если TikTok не пустил бота</b>У TikTok нет бесплатного API для просмотров, поэтому бот читает их со страницы видео, как браузер. Иногда TikTok это блокирует (капча). Тогда видео всё равно сохраняется, бот пробует ещё раз при следующей проверке, а админам приходит заявка — они могут вписать просмотры вручную через <code>/setviews</code>. Если не читается вообще ни одно видео — перезапусти бота: он обновит <code>yt-dlp</code>.</div>
 <div class="note info"><b>Игрок не в сети или сервер спит?</b>Монеты не пропадают. Бот выдаст их при следующей проверке, когда игрок будет онлайн. Если инвентарь полный — монеты упадут рядом.</div>
 </section>
 
 <!-- 13 -->
 <section id="admin">
-<h2><span class="n">13</span>Команды админа</h2>
-<p>Видны только тем, у кого на Discord-сервере есть право «Администратор». Работают только на сервере (не в личке).</p>
+<h2><span class="n">14</span>Команды админа</h2>
+<p>Видны только тем, у кого на Discord-сервере есть право «Администратор». Работают только на сервере (не в личке). Команды списка Media — в <a href="#media">шаге 12</a>, их может использовать только владелец.</p>
 <div class="tbl"><table>
 <tr><th>Команда</th><th>Что делает</th></tr>
 <tr><td><code>/checknow</code></td><td>Проверить просмотры и выдать монеты прямо сейчас, с отчётом</td></tr>
-<tr><td><code>/setviews video views</code></td><td>Вписать просмотры вручную (для TikTok). Можно вставить ссылку или ID вида <code>tt:123…</code></td></tr>
+<tr><td><code>/setviews video views</code></td><td>Вписать просмотры вручную (если TikTok не прочитался сам). Можно вставить ссылку или ID вида <code>tt:123…</code></td></tr>
 <tr><td><code>/unlink user</code></td><td>Отвязать ник игрока (например, если он ошибся в нике)</td></tr>
 </table></div>
 <p>Отчёт <code>/checknow</code>:</p>
 <div class="tbl"><table>
 <tr><th>Ответ</th><th>Значит</th></tr>
 <tr><td>✅ Ник: выдано 176 MediaCoin</td><td>Всё сработало</td></tr>
+<tr><td>🎵 Ник: TikTok проверен автоматически</td><td>Видео «на проверке» прочиталось, код в подписи найден</td></tr>
 <tr><td>⏳ Ник: не в сети, выдам позже</td><td>Игрок не на сервере (или ник отличается регистром)</td></tr>
 <tr><td>⚠️ RCON: нет связи с сервером</td><td>Сервер выключен / спит / неверный порт</td></tr>
 <tr><td>⚠️ Ник: сервер ответил: …</td><td>Проблема с командой монеты — проверь шаг 6</td></tr>
@@ -415,7 +447,7 @@ TOL-2370</pre></div></li>
 
 <!-- 14 -->
 <section id="manual">
-<h2><span class="n">14</span>Без RCON — ручной режим</h2>
+<h2><span class="n">15</span>Без RCON — ручной режим</h2>
 <p>Если нет доступа к RCON (хостинг не даёт порт, сервер не твой и т.п.):</p>
 <ol class="steps">
   <li>В <code>settings.txt</code> поставь <code>MODE=manual</code>. RCON-строки можно не заполнять.</li>
@@ -427,7 +459,7 @@ TOL-2370</pre></div></li>
 
 <!-- 15 -->
 <section id="hosting">
-<h2><span class="n">15</span>Бот 24/7 онлайн</h2>
+<h2><span class="n">16</span>Бот 24/7 онлайн</h2>
 <p>На твоём ПК бот работает, только пока ПК включён и окно открыто. Чтобы он работал всегда, его переносят на <b>хостинг</b> — компьютер в интернете, который не выключается.</p>
 <div class="grid2">
 <div class="card"><b>🆓 Бесплатный хостинг для ботов</b><p>В интернете есть <b>бесплатные хостинги для Discord-ботов</b> 24/7. Найди в Google: <code>free discord bot hosting python</code>. Выбирай такой, где:</p>
@@ -438,7 +470,7 @@ TOL-2370</pre></div></li>
 <ol class="steps">
   <li>Загрузи файлы: <code>bot.py</code>, <code>rcon_client.py</code>, <code>settings.txt</code>, <code>requirements.txt</code>. Файлы <code>.bat</code> там не нужны.</li>
   <li>Если бот уже работал на ПК — загрузи и <code>mediacoin.db</code> (база, кто что получил).</li>
-  <li>Команда запуска на хостинге: <code>python bot.py</code> (или выбери <code>bot.py</code> как главный файл). Библиотеки ставятся из <code>requirements.txt</code>.</li>
+  <li>Команда запуска на хостинге: <code>python bot.py</code> (или выбери <code>bot.py</code> как главный файл). Библиотеки (<code>discord.py</code>, <code>yt-dlp</code>) ставятся из <code>requirements.txt</code>.</li>
   <li><b>Выключи бота на ПК!</b> Два бота с одним токеном мешают друг другу (ошибка «session has been invalidated»).</li>
 </ol>
 <div class="note warn"><b>Осторожно с бесплатными хостингами</b>Ты загружаешь туда токен и пароль RCON. Используй известные сервисы с хорошими отзывами. Если сомневаешься — сделай <b>Reset Token</b> после переезда на другой хостинг.</div>
@@ -446,13 +478,15 @@ TOL-2370</pre></div></li>
 
 <!-- 16 -->
 <section id="errors">
-<h2><span class="n">16</span>Частые ошибки</h2>
+<h2><span class="n">17</span>Частые ошибки</h2>
 <div class="tbl"><table>
 <tr><th>Что написано</th><th>Как исправить</th></tr>
 <tr><td>Python не найден</td><td>Переустанови Python с галочкой «Add python.exe to PATH» (шаг 3).</td></tr>
 <tr><td>В settings.txt не заполнено: …</td><td>Остались <code>ВСТАВЬ_…</code> в этой строке. Заполни.</td></tr>
-<tr><td><code>403 Forbidden … Missing Access</code> или «Discord не пускает бота на сервер»</td><td>Бот не добавлен на сервер или без <code>applications.commands</code> → заново шаг 7.3. Проверь <code>GUILD_ID</code>.</td></tr>
-<tr><td>«не включено разрешение Server Members Intent»</td><td>Шаг 7.2 — включи и обязательно нажми <b>Save Changes</b>. Или поставь <code>WELCOME=0</code>.</td></tr>
+<tr><td><code>403 Forbidden … Missing Access</code> или «Discord не пускает бота на сервер»</td><td>Бот не добавлен на сервер или без <code>applications.commands</code> → заново шаг 7.2. Проверь <code>GUILD_ID</code>.</td></tr>
+<tr><td>Тебя нет в списке Media</td><td>Владелец сервера должен добавить человека: <code>/addmedia</code> (шаг 12).</td></tr>
+<tr><td>Добавлять в Media может только владелец сервера</td><td>Так и задумано. Если нужно разрешить кому-то ещё — впиши его Discord ID в <code>MANAGER_IDS</code> и перезапусти бота.</td></tr>
+<tr><td>Нет <code>/addmedia</code> после <code>/</code></td><td>Видна только тем, у кого право «Администратор». Перезапусти бота и нажми <kbd>Ctrl</kbd>+<kbd>R</kbd> в Discord.</td></tr>
 <tr><td><code>session has been invalidated</code> много раз подряд</td><td>Бот запущен в двух местах (ПК + хостинг или два окна). Запусти <code>STOP_BOT.bat</code>, выключи бота на хостинге. Не помогло — <b>Reset Token</b> и новый токен в settings.txt.</td></tr>
 <tr><td>Бот УЖЕ запущен на этом компьютере</td><td>Открыто второе окно. Закрой лишнее или <code>STOP_BOT.bat</code>.</td></tr>
 <tr><td>Время ожидания вышло / нет связи с сервером</td><td>Сервер выключен или спит; порт RCON не открыт или неверный (шаг 4).</td></tr>
@@ -460,6 +494,8 @@ TOL-2370</pre></div></li>
 <tr><td>Неверный пароль RCON</td><td>Сравни с <code>rcon.password</code> в server.properties (без пробелов в конце).</td></tr>
 <tr><td>Команд нет после <code>/</code></td><td>Бот должен быть запущен. Нажми <kbd>Ctrl</kbd>+<kbd>R</kbd> в Discord. В личке команды иногда появляются через пару минут.</td></tr>
 <tr><td>В описании видео нет твоего кода</td><td>Добавь код в <b>описание</b> (не в комментарий), подожди минуту и повтори.</td></tr>
+<tr><td>В подписи TikTok-видео нет твоего кода</td><td>Код должен быть в <b>подписи</b> видео (не в комментарии и не в профиле). Измени подпись, подожди пару минут и повтори.</td></tr>
+<tr><td>«Не могу прочитать просмотры TikTok… 3 раза подряд» (в админ-канале)</td><td>TikTok блокирует бота. Перезапусти бота (обновится <code>yt-dlp</code>), а пока впиши просмотры вручную: <code>/setviews</code>.</td></tr>
 <tr><td>Видео принято, но монет нет</td><td>Проверка раз в час. Зайди на сервер и попроси админа сделать <code>/checknow</code>.</td></tr>
 <tr><td>сервер ответил: Unknown or incomplete command</td><td>Ошибка в <code>GIVE_COMMAND</code>. Проверь команду в консоли (шаг 6), не забудь <code>minecraft:</code>.</td></tr>
 </table></div>
@@ -467,7 +503,7 @@ TOL-2370</pre></div></li>
 
 <!-- 17 -->
 <section id="safety">
-<h2><span class="n">17</span>Безопасность</h2>
+<h2><span class="n">18</span>Безопасность</h2>
 <ul class="check">
   <li>🔒 <code>settings.txt</code> после заполнения <b>никому не отправляй</b>. Если надо показать — замени токены на <code>***</code>.</li>
   <li>🔒 Токен утёк → <b>Reset Token</b>. Ключ YouTube утёк → <b>Regenerate key</b> в Google Cloud.</li>
